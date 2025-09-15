@@ -1,2 +1,2 @@
-# MERN-SMS
-Student management system using MERN
+# MERN-EMS
+Employee management system using MERN

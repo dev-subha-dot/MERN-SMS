@@ -13,9 +13,9 @@ const router = Router();
 
 router.post("/create_employee", createEmployee);
 router.get("/get_employee", getEmployee);
-router.get("/get_employee_byId/:id", getEmployeeById);
+router.get("/get_employee_byId/:_id", getEmployeeById);
 router.put("/update_employee", updateEmployee);
-router.delete("/delete_employee_byId/:id", deleteEmployee);
+router.delete("/delete_employee_byId/:_id", deleteEmployee);
 router.post("/upload", upload.single("file"), uploadProfileImg);
 
 

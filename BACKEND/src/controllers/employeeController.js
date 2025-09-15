@@ -1,129 +1,120 @@
-import { pool } from "../db.js";
+// controllers/employeeController.js
+import Employee from "../models/Employee.js";
 
+// Create Employee
 export const createEmployee = async (req, res) => {
+  console.log("testing for CE", req.body)
   try {
     const { EmpId, ProfileImg, Name, Department, Designation, Project, Type, Status } = req.body;
-    const parsedEmployeedId = parseInt(EmpId);
-    const [r] = await pool.query(
-      "INSERT INTO Employee (EmpId, ProfileImg, Name, Department, Designation, Project, Type, Status) VALUES (?,?,?,?,?,?,?,?)",
-      [parsedEmployeedId, ProfileImg, Name, Department, Designation, Project, Type, Status]
-    );
-    if (r) {
-      res.json({ status: 200, message: "Created Successfully" })
-    }
-    else {
-      res.json({ status: 400, message: "Failed To Create" })
-    }
-  }
-  catch (err) {
-    res.json({ status: 500, message: err.message })
+
+    const employee = new Employee({ EmpId, ProfileImg, Name, Department, Designation, Project, Type, Status });
+    await employee.save();
+
+    res.json({ status: 200, message: "Created Successfully", data: employee });
+  } catch (err) {
+    res.json({ status: 500, message: err.message });
   }
 };
 
+// Get Employees (with search + pagination)
 export const getEmployee = async (req, res) => {
   try {
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
-    const search = req.query.search;
-    const offset = (page - 1) * limit;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const skip = (page - 1) * limit;
 
-    let searchCondition = "";
-    let values = [];
+    // Search condition (case-insensitive)
+    const searchCondition = search
+      ? {
+        $or: [
+          { Name: { $regex: search, $options: "i" } },
+          { EmpId: { $regex: search, $options: "i" } },
+          { Department: { $regex: search, $options: "i" } },
+          { Designation: { $regex: search, $options: "i" } },
+          { Project: { $regex: search, $options: "i" } },
+          { Type: { $regex: search, $options: "i" } },
+          { Status: { $regex: search, $options: "i" } },
+        ],
+      }
+      : {};
 
-    if (search) {
-      searchCondition = `WHERE Name LIKE ? OR EmpId LIKE ? OR Department LIKE ? OR Designation LIKE ? OR Project LIKE ? OR Type LIKE ? OR Status LIKE ?`;
-      const likeSearch = `%${search}%`;
-      values = [likeSearch, likeSearch, likeSearch, likeSearch, likeSearch, likeSearch, likeSearch];
-    }
+    // Query DB
+    const employees = await Employee.find(searchCondition)
+      .sort({ _id: 1 })
+      .skip(skip)
+      .limit(limit);
 
-    // Get paginated employees
-    const [rows] = await pool.query(
-      `SELECT * FROM Employee ${searchCondition} ORDER BY Id ASC LIMIT ? OFFSET ?`,
-      [...values, limit, offset]
-    );
-
-    // Get total count
-    const [countRows] = await pool.query(
-      `SELECT COUNT(*) as total FROM Employee ${searchCondition}`,
-      values
-    );
-
-    const totalItems = countRows[0].total;
+    const totalItems = await Employee.countDocuments(searchCondition);
     const totalPages = Math.ceil(totalItems / limit);
 
     res.json({
       status: 200,
       message: "",
-      data: rows, // record
-      pagination: {
-        totalPages
-      },
+      data: employees,
+      pagination: { totalPages }
     });
   } catch (err) {
     res.json({ status: 500, message: err.message });
   }
 };
 
+// Get Employee by ID
 export const getEmployeeById = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM Employee WHERE Id=?", [req.params.id]);
-    if (rows) {
-      res.json({ status: 200, message: "", data: rows[0] })
-    }
-    else {
-      res.json({ status: 400, message: "Failed To Get" })
-    }
-  }
-  catch (err) {
-    res.json({ status: 500, message: err.message })
-  }
-};
+    const employee = await Employee.findById(req.params._id);
+    if (!employee) return res.json({ status: 404, message: "Employee not found" });
 
-export const updateEmployee = async (req, res) => {
-  try {
-    const { EmpId, ProfileImg, Name, Department, Designation, Project, Type, Status, Id } = req.body;
-    const parsedEmployeedId = parseInt(EmpId);
-    const [r] = await pool.query(
-      "UPDATE Employee SET EmpId=?, ProfileImg=?, Name=?, Department=?, Designation=?, Project=?, Type=?, Status=? WHERE Id=?",
-      [parsedEmployeedId, ProfileImg, Name, Department, Designation, Project, Type, Status, Id]
-    );
-    if (r) {
-      res.json({ status: 200, message: "Updated Successfully" })
-    }
-    else {
-      res.json({ status: 400, message: "Failed To Update" })
-    }
+    res.json({ status: 200, message: "", data: employee });
   } catch (err) {
-    res.json({ status: 500, message: err.message })
+    res.json({ status: 500, message: err.message });
   }
 };
 
+// Update Employee
+export const updateEmployee = async (req, res) => {
+  console.log("update", req.body)
+  console.log("updated", req.params)
+
+  try {
+    const { _id } = req.body; // NOTE: changed to params instead of body
+    const updatedEmployee = await Employee.findByIdAndUpdate(_id, req.body, { new: true });
+
+    if (!updatedEmployee) return res.json({ status: 404, message: "Employee not found" });
+
+    res.json({ status: 200, message: "Updated Successfully", data: updatedEmployee });
+  } catch (err) {
+    res.json({ status: 500, message: err.message });
+  }
+};
+
+// Delete Employee
 export const deleteEmployee = async (req, res) => {
   try {
-    const [r] = await pool.query("DELETE FROM Employee WHERE Id=?", [req.params.id]);
-    if (r) {
-      res.json({ status: 200, message: "Deleted Successfully" })
-    }
-    else {
-      res.json({ status: 400, message: "Failed To Dekete" })
-    }
+    const { _id } = req.params;
+    const deletedEmployee = await Employee.findByIdAndDelete(_id);
+
+    if (!deletedEmployee) return res.json({ status: 404, message: "Employee not found" });
+
+    res.json({ status: 200, message: "Deleted Successfully" });
   } catch (err) {
-    res.json({ status: 500, message: err.message })
+    res.json({ status: 500, message: err.message });
   }
 };
 
+// Upload Profile Image (just return file info for now)
 export const uploadProfileImg = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ status: 400, message: "No file uploaded" });
     }
-    // You can also store req.file.path in DB under employee profile
+
     res.json({
       status: 200,
       message: "File uploaded successfully",
       file: req.file
     });
   } catch (err) {
-    res.json({ status: 500, message: err.message })
+    res.json({ status: 500, message: err.message });
   }
 };

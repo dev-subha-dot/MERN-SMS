@@ -1,6 +1,6 @@
-# #Frontend
-# /FRONTEND/node_modules
-# /FRONTEND/package-lock.json
+##Frontend
+/FRONTEND/node_modules
+/FRONTEND/package-lock.json
 
 
 #Backend

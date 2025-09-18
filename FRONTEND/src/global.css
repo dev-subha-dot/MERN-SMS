@@ -1,0 +1,95 @@
+
+/* Header CSS */
+
+.header nav {
+    height: 80px;
+    border-bottom: 1px solid #d9d9d9;
+}
+.header .px-custom {
+    padding-right: 1.5rem !important;
+    padding-left: 3rem !important;
+}
+.header .profile-img {
+    width: 40px;
+}
+
+.header .navbar-brand {
+    display: block;
+    width: 220px;
+    position: relative;
+}
+
+.header .navbar-brand::after {
+    content: '';
+    border-right: 1px solid #d9d9d9;
+    height: 80px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top: -20px;
+}
+
+/* Side Menu CSS */
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    position: relative;
+    top: 40px;
+    left: 0;
+    border-right: 1px solid #d9d9d9;
+    padding: 1rem 0;
+    background-color: #fafafa;
+}
+
+
+.sidebar .nav-link {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    color: rgb(150, 147, 147);
+    background-color: transparent;
+    transition: color 0.3s;
+}
+
+
+.sidebar .nav-link:hover {
+    background-color: #0085ff;
+    color: white;
+    border-radius: 0 25px 25px 0;
+}
+
+
+/* CONTENT */
+
+.content {
+    margin-top: 110px;
+    padding: 10px;
+}
+
+
+.icon-class {
+    display: inline;
+}
+
+
+
+/* Add Employee */
+
+.br-10{
+    border-radius: 15px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        top: 0;
+        border-right: none;
+    }
+
+    .content {
+        margin-top: 110px;
+    }
+}
+

@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 connectDB();
 
 // Routes
-app.use("/employees", employeeRoutes);
+app.use("/api/employee", employeeRoutes);
 
 // Start server
 const PORT = process.env.PORT || 3002;

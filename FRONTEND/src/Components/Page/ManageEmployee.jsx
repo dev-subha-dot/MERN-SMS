@@ -381,7 +381,7 @@ export default function ManageEmployee() {
                     {
                         mode !== "view" &&
                         <label
-                            htmlFor="profilePic"
+                        
                             className="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2"
                             style={{ cursor: "pointer" }}
                         >

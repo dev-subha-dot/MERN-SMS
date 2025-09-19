@@ -1,14 +1,15 @@
-
 /* Header CSS */
 
 .header nav {
     height: 80px;
     border-bottom: 1px solid #d9d9d9;
 }
+
 .header .px-custom {
     padding-right: 1.5rem !important;
     padding-left: 3rem !important;
 }
+
 .header .profile-img {
     width: 40px;
 }
@@ -75,7 +76,7 @@
 
 /* Add Employee */
 
-.br-10{
+.br-10 {
     border-radius: 15px;
 }
 
@@ -92,4 +93,3 @@
         margin-top: 110px;
     }
 }
-

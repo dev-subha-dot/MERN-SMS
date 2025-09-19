@@ -1,14 +1,16 @@
-// Package
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
+// Layouts
+import MainLayout from "./Components/Layout/MainLayout";
+import AuthLayout from "./Components/Layout/AuthLayout";
 
-// Components
-import Header from "./Components/Layout/Header";
-import Sidebar from "./Components/Layout/Sidebar";
+// Pages
 import Employees from "./Components/Page/Employee";
 import ManageEmployee from "./Components/Page/ManageEmployee";
+import Login from "./Components/Page/Login";
+import Register from "./Components/Page/Register";
 
 // Style
 import "./global.css";
@@ -16,25 +18,55 @@ import "./global.css";
 function App() {
   return (
     <Router>
-      <Header />
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-3 col-lg-auto bg-light ">
-            <div className="sidebar">
-              <Sidebar />
-            </div>
-          </div>
-          <main className="col-md-9 col-lg px-4">
-            <div className="content">
-              <Routes>
-                <Route path="/employee" element={<Employees />} />
-                <Route path="/addemployee" element={<ManageEmployee />} />
-                <Route path="/addemployee/:mode/:id" element={<ManageEmployee />} />
-              </Routes>
-            </div>
-          </main>
-        </div>
-      </div>
+      <Routes>
+
+        {/* { Defulat Redirection} */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Unauthenticated routes */}
+        <Route
+          path="/login"
+          element={
+            <AuthLayout>
+              <Login />
+            </AuthLayout>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <AuthLayout>
+              <Register />
+            </AuthLayout>
+          }
+        />
+
+        {/* Authenticated routes */}
+        <Route
+          path="/employee"
+          element={
+            <MainLayout>
+              <Employees />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/addemployee"
+          element={
+            <MainLayout>
+              <ManageEmployee />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/addemployee/:mode/:id"
+          element={
+            <MainLayout>
+              <ManageEmployee />
+            </MainLayout>
+          }
+        />
+      </Routes>
     </Router>
   );
 }

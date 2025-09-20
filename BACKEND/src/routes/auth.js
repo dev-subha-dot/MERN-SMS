@@ -11,13 +11,13 @@ router.post("/register", async (req, res) => {
 
         // basic checks
         if (!fullName || !email || !password) {
-            return res.status(400).json({ message: "Please fill all fields" });
+            return res.json({ status: 400, message: "Please fill all fields" });
         }
 
         // check existing email
         const existing = await User.findOne({ email: email });
         if (existing) {
-            return res.status(400).json({ message: "Email already in use" });
+            return res.json({ status: 400, message: "Email already in use" });
         }
 
         // ⚠️ store password directly (no bcrypt)
@@ -28,32 +28,32 @@ router.post("/register", async (req, res) => {
         });
 
         await user.save();
-        return res.status(200).json({ message: "User registered successfully" });
+        return res.json({ status: 200, message: "User registered successfully" });
     } catch (err) {
-        return res.status(500).json({ message: err.message });
+        return res.json({ status: 500, message: err.message });
     }
 });
 
 router.post("/login", async (req, res) => {
     try {
 
-        const { email, password } = req.body;4
+        const { email, password } = req.body; 4
 
         if (!email || !password) {
-            return res.status(400).json({ message: "Please provide email and password" });
+            return res.json({ status: 400, message: "Please provide email and password" });
         }
 
         const user = await User.findOne({ email: email, password: password });
         if (!user) {
-            return res.status(400).json({ message: "not a valid user" });
+            return res.json({ status: 400, message: "not a valid user" });
         }
 
-        return res.status(200).json({
-            message: "Login successful",
+        return res.json({
+            status: 200, message: "Login successful",
         });
 
     } catch (err) {
-        return res.status(500).json({ message: err.message });
+        return res.json({ status: 500, message: err.message });
     }
 });
 

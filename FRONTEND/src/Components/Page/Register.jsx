@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { configUser, registerUser } from "../../Api/AuthManagement";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Register() {
   const [config, setConfig] = useState({ email: "", password: "" })
 
   const getConfig = async () => {
-    const res = await axios.get("http://localhost:3002/getConfig");
+    const res = await configUser();
     if (res.data.status === 200) {
       const { email, password } = res.data.data;
       setConfig({
@@ -30,6 +31,10 @@ export default function Register() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({
+      ...errors,
+      [e.target.name]: e.target.value.trim() ? "" : errors[e.target.name], // clear error for this field
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -56,7 +61,7 @@ export default function Register() {
     }
 
     try {
-      const res = await axios.post("http://localhost:3002/api/auth/register", formData);
+      const res = await registerUser(formData);
       if (res.data.status === 200) {
         alert(res.data.message || "Registered");
         navigate("/Login");

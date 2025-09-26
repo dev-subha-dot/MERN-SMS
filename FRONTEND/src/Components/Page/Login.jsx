@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { loginUser } from "../../Api/AuthManagement";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -20,11 +20,16 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:3002/api/auth/login", formData);
+      const res = await loginUser(formData);
       console.log("User Data:", res.data.user);
-      if (res.status === 200) {
+      if (res.data.status === 200) {
         alert(res.data.message);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userType", res.data.userType);
         navigate("/Employee");
+      }
+      else {
+        alert(res.data.message);
       }
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");

@@ -3,14 +3,22 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-
 export default function Sidebar() {
-  const menuItems = [
-    { path: "/", label: "Dashboard", icon: "bi-speedometer2" },
-    { path: "/employee", label: "Employees", icon: "bi-people" },
-    { path: "/calendar", label: "Calendar", icon: "bi-calendar-minus-fill" },
-    { path: "/message", label: "Message", icon: "bi-chat-text-fill" },
-  ];
+  const userType = localStorage.getItem("userType"); // string value: "1" or "2"
+
+  const menuConfig = {
+    "1": [
+      { path: "/", label: "Dashboard", icon: "bi-speedometer2" },
+      { path: "/employee", label: "Employees", icon: "bi-people" },
+      { path: "/calendar", label: "Calendar", icon: "bi-calendar-minus-fill" },
+      { path: "/message", label: "Message", icon: "bi-chat-text-fill" },
+    ],
+    "2": [
+      { path: "/employee", label: "Employees", icon: "bi-people" },
+    ],
+  };
+
+  const menuItems = menuConfig[userType];
   return (
     <div className="sidebar bg-light">
       <ul className="nav flex-column ">

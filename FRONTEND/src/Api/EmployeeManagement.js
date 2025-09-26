@@ -9,7 +9,11 @@ export const addEmployee = async (employeeData) => {
 
 // Get All Employee
 export const getEmployee = (page, limit, search = "") => {
-  return axios.get(`${baseUrl}get_employee?page=${page}&limit=${limit}&search=${search}`);
+  return axios.get(`${baseUrl}get_employee?page=${page}&limit=${limit}&search=${search}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
 };
 
 // 🔍 Get Employee by ID

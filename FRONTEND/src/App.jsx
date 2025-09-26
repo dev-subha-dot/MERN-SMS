@@ -11,9 +11,23 @@ import Employees from "./Components/Page/Employee";
 import ManageEmployee from "./Components/Page/ManageEmployee";
 import Login from "./Components/Page/Login";
 import Register from "./Components/Page/Register";
+import PrivateRoute from "./Components/PrivateRoute"; // import the wrapper
 
 // Style
 import "./global.css";
+
+
+// Custom wrapper for Auth routes
+function PublicRoute({ children }) {
+  const token = localStorage.getItem("token"); // your token key
+
+  if (token) {
+    // If token exists, redirect back to previous page or /employee
+    return <Navigate to="/employee" replace />;
+  }
+
+  return children;
+}
 
 function App() {
   return (
@@ -27,17 +41,22 @@ function App() {
         <Route
           path="/login"
           element={
-            <AuthLayout>
-              <Login />
-            </AuthLayout>
+            <PublicRoute>
+              <AuthLayout>
+                <Login />
+              </AuthLayout>
+            </PublicRoute>
+
           }
         />
         <Route
           path="/register"
           element={
-            <AuthLayout>
-              <Register />
-            </AuthLayout>
+            <PublicRoute>
+              <AuthLayout>
+                <Register />
+              </AuthLayout>
+            </PublicRoute>
           }
         />
 
@@ -45,25 +64,31 @@ function App() {
         <Route
           path="/employee"
           element={
-            <MainLayout>
-              <Employees />
-            </MainLayout>
+            <PrivateRoute>
+              <MainLayout>
+                <Employees />
+              </MainLayout>
+            </PrivateRoute>
           }
         />
         <Route
           path="/addemployee"
           element={
-            <MainLayout>
-              <ManageEmployee />
-            </MainLayout>
+            <PrivateRoute>
+              <MainLayout>
+                <ManageEmployee />
+              </MainLayout>
+            </PrivateRoute>
           }
         />
         <Route
           path="/addemployee/:mode/:id"
           element={
-            <MainLayout>
-              <ManageEmployee />
-            </MainLayout>
+            <PrivateRoute>
+              <MainLayout>
+                <ManageEmployee />
+              </MainLayout>
+            </PrivateRoute>
           }
         />
       </Routes>

@@ -4,7 +4,7 @@ import connectDB from "./db.js";
 import employeeRoutes from "./routes/employeeRoutes.js";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
-
+import { regex } from "./config/config.js";
 dotenv.config();
 const app = express();
 
@@ -15,6 +15,16 @@ app.use(express.json());
 app.get("/", (req, res) => {
     console.log("server is calling");
     res.send("Hello, API is working 🚀");
+});
+
+app.get("/getConfig", (req, res) => {
+    res.json({
+        status: 200,
+        data: {
+            email: regex.email.source,     // 👈 get regex as string
+            password: regex.password.source,
+        },
+    });
 });
 
 

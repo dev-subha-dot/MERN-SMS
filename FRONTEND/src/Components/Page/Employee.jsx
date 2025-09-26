@@ -35,6 +35,9 @@ export default function Employees() {
         }));
       }
     }
+    else {
+      alert(response.data.message)
+    }
   };
 
   const redirect = (mode, id) => {

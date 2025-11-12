@@ -7,7 +7,7 @@ export const loginUser = async (formData) => {
     return axios.post(`${baseUrl}login`, formData);
 };
 
-// Register APIs
+// Register API
 export const registerUser = async (formData) => {
     return axios.post(`${baseUrl}register`, formData);
 };
